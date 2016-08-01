@@ -11,6 +11,7 @@ if (UNIX)
         ${PROJECT_SOURCE_DIR}/deps/APECore/deps/capstone/include
     )
     add_library(APESO SHARED ${ALL_SOURCES})
+    target_compile_features(APESO PRIVATE cxx_range_for)
 
     target_link_libraries(APESO APECore pthread)
 
