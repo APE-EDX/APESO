@@ -13,7 +13,7 @@ if (UNIX)
     add_library(APESO SHARED ${ALL_SOURCES})
     target_compile_features(APESO PRIVATE cxx_range_for)
 
-    target_link_libraries(APESO APECore pthread)
+    target_link_libraries(APESO APECore pthread dl)
 
     if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
         set(ARCH_BITS 64)

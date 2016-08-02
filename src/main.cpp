@@ -4,10 +4,12 @@
 #include <unistd.h>
 //#include "socket.hpp"
 
+#include <iostream>
+
 #include <duktape.h>
 #include <apecore.hpp>
 
-
+using namespace std;
 
 int make_terminal() {
     char  pidarg[256]; // the '--pid=' argument of tail
@@ -25,7 +27,7 @@ int make_terminal() {
     sprintf( pidarg, "--pid=%d", parent );
 
     // Create child process
-    child = fork(); 
+    child = fork();
     if( child == 0 ) {
         // CHILD PROCESS
 
@@ -58,14 +60,24 @@ int make_terminal() {
 
 
 
-void hello()
-{
-	printf("I just got loaded\n");
+void hello(){
+	printf("[!] Modulo inyectado\n");
+}
 
-  duk_context *ctx = duk_create_heap_default();
-  duk_eval_string(ctx, "print('Hello world!');");
-  duk_destroy_heap(ctx);
-    
+
+
+void identify_function_ptr()  {
+  Dl_info info;
+  dladdr(__builtin_return_address(0), &info);
+  printf("%s\n", info.dli_fname);
+}
+
+
+void getEntryPoint() // get the entrypoint of the library
+{
+  Dl_info info;
+  dladdr(__builtin_return_address(0), &info);
+  printf("%s\n", info.dli_fbase);
 }
 
 
@@ -73,12 +85,24 @@ void hello()
 __attribute__((constructor))
 void loadMsg()
 {
-
-
+/*
    if( make_terminal() != 0 ) {
         fprintf( stderr, "Could not create terminal!\n" );
-    } 
+    } */
 
-	hello();
+    hello();
+
+  duk_context *ctx = duk_create_heap_default();
+  duk_eval_string(ctx, "print('Js is WORKING!');");
+  duk_destroy_heap(ctx);
+
+  printf("[?] Obteniendo ruta...");
+  identify_function_ptr();
+  printf ("[?] Obteniendo EntryPoint de la libreria" );
+  getEntryPoint();
+
+  //dl_iterate_phdr SIZE OF DLL
+  //getrusage       Size of PROC
+  // VIRTUALQUERY http://stackoverflow.com/questions/269314/is-there-a-better-way-than-parsing-proc-self-maps-to-figure-out-memory-protecti
 
 }
