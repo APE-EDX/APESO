@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 #include <unistd.h>
+#include <pthread.h> // threads
+#include <dlfcn.h> // getLibraryPath
+
 //#include "socket.hpp"
 
 #include <iostream>
@@ -64,6 +66,13 @@ void hello(){
 	printf("[!] Modulo inyectado\n");
 }
 
+/*
+void createThreadLin(ThreadFunction function, void* parameter) //Adapted to linux
+{
+	pthread_t tid;
+  pthread_create(&(tid), NULL, function, NULL);
+}
+
 
 
 void identify_function_ptr()  {
@@ -79,18 +88,41 @@ void getEntryPoint() // get the entrypoint of the library
   dladdr(__builtin_return_address(0), &info);
   printf("%s\n", info.dli_fbase);
 }
+*/
+
+
+
+duk_ret_t WrapCreateConsole(duk_context *ctx)
+{
+    duk_push_boolean(ctx, make_terminal());
+    return 1;  /* one return value */
+}
+
 
 
 //EntryPoint
 __attribute__((constructor))
 void loadMsg()
 {
+  hello();
+
+
+  duk_context* ctx = apecore_initialize([](duk_context* ctx) -> void {
+
+  			// Add CreateConsole
+  			duk_push_c_function(ctx, WrapCreateConsole, DUK_VARARGS);
+  			duk_put_global_string(ctx, "CreateConsole");
+
+  });
+
+
+
+
 /*
    if( make_terminal() != 0 ) {
         fprintf( stderr, "Could not create terminal!\n" );
-    } */
+    }
 
-    hello();
 
   duk_context *ctx = duk_create_heap_default();
   duk_eval_string(ctx, "print('Js is WORKING!');");
@@ -104,5 +136,5 @@ void loadMsg()
   //dl_iterate_phdr SIZE OF DLL
   //getrusage       Size of PROC
   // VIRTUALQUERY http://stackoverflow.com/questions/269314/is-there-a-better-way-than-parsing-proc-self-maps-to-figure-out-memory-protecti
-
+*/
 }
