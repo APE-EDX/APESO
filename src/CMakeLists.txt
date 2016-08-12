@@ -22,7 +22,7 @@ if (UNIX)
         set(ARCH_BITS 32)
     endif()
 
-    set(OUTPUT_NAME "APEDLL_${ARCH_BITS}")
+    set(OUTPUT_NAME "APESO_${ARCH_BITS}")
 
     set_target_properties(APESO PROPERTIES
         OUTPUT_NAME ${OUTPUT_NAME}
