@@ -96,7 +96,7 @@ void* getLibraryOEP() // get the entrypoint of the library
 {
   Dl_info info;
   dladdr(__builtin_return_address(0), &info);
-  printf("%s\n", info.dli_fbase);
+  printf("%X\n", info.dli_fbase);
   return(info.dli_fbase);
 }
 
