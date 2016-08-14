@@ -88,8 +88,12 @@ size_t getLibraryPath(char* buffer, size_t size){
   Dl_info info;
   dladdr(__builtin_return_address(0), &info);
   printf("%s\n", info.dli_fname);
-  buffer = (char*)info.dli_fname;
-  return(strlen(info.dli_fname));
+
+  int len = strlen(info.dli_fname);
+  int mlen = (len > size) ? size : len;
+  strncpy(buffer, info.dli_fname, mlen);
+
+  return mlen;
 }
 
 void* getLibraryOEP() // get the entrypoint of the library
@@ -97,7 +101,7 @@ void* getLibraryOEP() // get the entrypoint of the library
   Dl_info info;
   dladdr(__builtin_return_address(0), &info);
   printf("%X\n", info.dli_fbase);
-  return(info.dli_fbase);
+  return info.dli_fbase;
 }
 
 
