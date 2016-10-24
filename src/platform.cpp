@@ -19,6 +19,11 @@ namespace ape
 {
     namespace platform
     {
+        void sleep(uint32_t ms)
+        {
+            usleep(ms * 1000);
+        }
+
         bool createThread(ThreadFunction function, void* parameter) //Adapted to linux
         {
             printf("[?] Creando Thread..");
